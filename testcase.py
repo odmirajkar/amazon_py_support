@@ -10,74 +10,56 @@ class Test_ATT(unittest.TestCase):
     def setUpClass(cls):
         cls.support=selenium_support()
         cls.support.init()
-        url="https://www.att.com"
+        url="https://www.amazon.in/"
         cls.support.driver.get(url)
-        cls.support.take_screenshot('att.png')
+        cls.support.take_screenshot('home.png')
         print(cls.support.driver.title)
 
-    def test_signin_testcase(self):
-        print("hi")
-        time.sleep(5)
-        account=self.support.driver.find_element_by_xpath("//span[@id='z1-profile-text' and .='Account']")
-        account.click()
-        self.support.take_screenshot('login.png')
-        print("Account clicked")
-
-        time.sleep(15)
-
-        signin=self.support.driver.find_element_by_xpath('//span[ .="Sign in"]')
-        signin.click()
-
-        time.sleep(10)
-        print(self.support.driver.find_element_by_xpath('//h1[@id="signInHeaderText"]').text +" visible")
-
-        userid=self.support.driver.find_element_by_xpath("//input[@id='userID']")
-        userid.send_keys('sp634u')
-
-        password=self.support.driver.find_element_by_xpath("//input[@id='password']")
-        password.send_keys('sp634u')
-
-        signin_button=self.support.driver.find_element_by_xpath("//button[@id='signin']")
-        signin_button.click()
-        time.sleep(10)
-
-        sign_in_check=self.support.driver.find_element_by_xpath("//h1[@class='bad-request-header mb-0 mt-3']")
-        print(sign_in_check.text)
-
-
-    def test_click_Pay_without_signing_in(self):
-        self.support.driver.get("https://www.att.com")
-
-        time.sleep(1)
-        account=self.support.driver.find_element_by_xpath("//span[@id='z1-profile-text' and .='Account']")
-        account.click()
-        print("Account clicked")
-        self.support.take_screenshot('payment.png')
-        time.sleep(12)
-        Pay_without_signing_in=self.support.driver.find_element_by_xpath("//span[.='Pay without signing in']")
-        Pay_without_signing_in.click()
-        time.sleep(10)
-        enter_ph_number=self.support.driver.find_element_by_xpath("//input[@name='Active AT&T phone number']")
-        enter_ph_number.send_keys('12345678')
-        print("phone number entered")
-        cancel_button=self.support.driver.find_element_by_xpath("//button[@aria-label='Cancel']")
-        cancel_button.click()
-        print("Cancel button clicked")
-
-
-    def test_Internet_order(self):
-        # //span[@class='z1-tier1-text' and .='TV']
-        self.support.driver.get("https://www.att.com")
-
-        time.sleep(10)
-        click_internet=self.support.driver.find_element_by_xpath("//span[@class='z1-tier1-text' and .='Internet']")
-        click_internet.click()
-        self.support.take_screenshot('internet.png')
-        print("Internet clciked")
-        time.sleep(15)
-        click_Check_availability=self.support.driver.find_element_by_xpath('//a[@title="Check availability"]')
-        click_Check_availability.click()
     
+    def test_signin_amazon(self):
+        self.support.driver.get('https://www.amazon.in/')
+        time.sleep(5)
+        self.support.driver.find_element_by_xpath("//span[.='Hello, Sign in']").click()
+        print("Sign in clicked")
+
+        time.sleep(7)
+
+        userid=self.support.driver.find_element_by_xpath('//*[@type="email"]')
+        userid.send_keys('soumyajit2pal@gmail.com')
+
+        self.support.driver.find_element_by_xpath("//*[@id='continue']").click()
+        time.sleep(5)
+        password=self.support.driver.find_element_by_xpath(".//*[@type='password']")
+        password.send_keys('test@test')
+        self.support.take_screenshot('login.png')
+        signin_button=self.support.driver.find_element_by_xpath("//*[@id='signInSubmit']")
+        signin_button.click()
+        time.sleep(3)
+
+        if self.support.driver.find_element_by_xpath("//h1[@class='a-spacing-small']").text == "Login":
+            print("Login failed")
+
+    def test_add_to_cart(self):
+        self.support.driver.get('https://www.amazon.in/')
+
+        time.sleep(5)
+
+        self.support.driver.find_elements_by_xpath('.//*[@id="twotabsearchtextbox"]')[0].send_keys("Echo Dot (Black) bundle with Fire TV Stick")
+        self.support.driver.find_element_by_xpath('//*[@value="Go"]').click()
+        
+
+        time.sleep(3)
+        self.support.driver.find_element_by_xpath('//span[.="Echo Dot (Black) bundle with Fire TV Stick"]').click()
+    
+        after_click=self.support.driver.window_handles[1]
+        self.support.driver.switch_to_window(after_click)
+        self.support.take_screenshot('echo.png')
+        print("switch to" +self.support.driver.title +"done")
+        time.sleep(2)
+        
+        self.support.driver.find_element_by_xpath('//input[@id="add-to-cart-button"]').click()
+        print("added to cart ")
+	
 
     @classmethod
     def tearDownClass(cls):
